@@ -1,51 +1,3 @@
-variable "namespace" {
-  type        = string
-  default     = ""
-  description = "Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp'"
-}
-
-variable "environment" {
-  type        = string
-  default     = ""
-  description = "Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT'"
-}
-
-variable "stage" {
-  type        = string
-  default     = ""
-  description = "Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release'"
-}
-
-variable "name" {
-  type        = string
-  default     = ""
-  description = "Solution name, e.g. 'app' or 'jenkins'"
-}
-
-variable "enabled" {
-  type        = bool
-  default     = true
-  description = "Set to false to prevent the module from creating any resources"
-}
-
-variable "delimiter" {
-  type        = string
-  default     = "-"
-  description = "Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes`"
-}
-
-variable "attributes" {
-  type        = list(string)
-  default     = []
-  description = "Additional attributes (e.g. `1`)"
-}
-
-variable "tags" {
-  type        = map(string)
-  default     = {}
-  description = "Additional tags (e.g. `map('BusinessUnit','XYZ')`"
-}
-
 variable "autoscale_write_target" {
   type        = number
   default     = 50
@@ -106,6 +58,12 @@ variable "enable_encryption" {
   description = "Enable DynamoDB server-side encryption"
 }
 
+variable "server_side_encryption_kms_key_arn" {
+  type        = string
+  default     = null
+  description = "The ARN of the CMK that should be used for the AWS KMS encryption. This attribute should only be specified if the key is different from the default DynamoDB CMK, alias/aws/dynamodb."
+}
+
 variable "enable_point_in_time_recovery" {
   type        = bool
   default     = true
@@ -147,6 +105,18 @@ variable "enable_autoscaler" {
   description = "Flag to enable/disable DynamoDB autoscaling"
 }
 
+variable "autoscaler_attributes" {
+  type        = list(string)
+  default     = []
+  description = "Additional attributes for the autoscaler module"
+}
+
+variable "autoscaler_tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional resource tags for the autoscaler module"
+}
+
 variable "dynamodb_attributes" {
   type = list(object({
     name = string
@@ -179,10 +149,4 @@ variable "local_secondary_index_map" {
   }))
   default     = []
   description = "Additional local secondary indexes in the form of a list of mapped values"
-}
-
-variable "regex_replace_chars" {
-  type        = string
-  default     = "/[^a-zA-Z0-9-]/"
-  description = "Regex to replace chars with empty string in `namespace`, `environment`, `stage` and `name`. By default only hyphens, letters and digits are allowed, all other chars are removed"
 }
